@@ -31,46 +31,11 @@ names(TempDF_ref)[names(TempDF_ref) == "Endtime"] <- "end"
 # Select relevant columns
 TempDF_ref <- TempDF_ref[, c("sound.files", "selec", "start", "end")]
 
-# Perform diagnosis on full detections
-DiagnoseFull <- diagnose_detection(reference = TempDF_ref, detection = TempDF_detect, min.overlap = 0.001)
-DiagnoseFull$f.score
-
-# Read the detection results file again
-TempDF_detect <- read.delim('/Users/denaclink/Desktop/RStudioProjects/Transfer-learning-open-data/Meerkat/birdnetoutput/dcase_MK2.BirdNET.selection.table.txt')
-
-# Add a column for the sound file identifier
-TempDF_detect$sound.files <- 'dcase_MK2'
-
-# Rename columns for clarity
-names(TempDF_detect)[names(TempDF_detect) == "Selection"] <- "selec"
-names(TempDF_detect)[names(TempDF_detect) == "Begin.Time..s."] <- "start"
-names(TempDF_detect)[names(TempDF_detect) == "End.Time..s."] <- "end"
-
-# Subset detections with confidence > 0.8
-TempDF_detect_90 <- subset(TempDF_detect, Confidence > 0.8)
-
-# Select relevant columns
-TempDF_detect_90 <- TempDF_detect_90[, c("sound.files", "selec", "start", "end")]
-
-# Diagnose detections with confidence > 0.8
-Diagnose90 <- diagnose_detection(reference = TempDF_ref, detection = TempDF_detect_90, min.overlap = 0.001)
-Diagnose90$f.score
-
-# Subset detections with confidence > 0.5
-TempDF_detect_50 <- subset(TempDF_detect, Confidence > 0.5)
-
-# Select relevant columns
-TempDF_detect_50 <- TempDF_detect_50[, c("sound.files", "selec", "start", "end")]
-
-# Diagnose detections with confidence > 0.5 
-Diagnose50 <- diagnose_detection(reference = TempDF_ref, detection = TempDF_detect_50, min.overlap = 0.001)
-Diagnose50$f.score  
-
 # Create a plot over threshold values
 PerformanceDF <- data.frame()
 
 thresholds <- seq(0,1,0.1)
-  
+
 for(i in 1:length(thresholds)){
   
   # Read the detection results file again
@@ -114,4 +79,3 @@ ggplot(data = PerformanceDF, aes(x = Threshold)) +
                      labels = c("F1", "Precision", "Recall")) +
   theme_minimal()+
   theme(legend.title = element_blank())# +xlim(0.5,1)
-

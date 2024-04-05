@@ -1,6 +1,7 @@
 library(stringr)  # Load the stringr package for string manipulation
 library(tidyr)    # Load the tidyr package for data tidying
 library(ggpubr)   # Load the ggpubr package for ggplot2-based plotting
+library(ggplot2)
 
 # Get the list of files containing BirdNET clip detections
 ClipDetections <-

@@ -1,0 +1,237 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Transfer-learning-open-data
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of Transfer-learning-open-data is to use BirdNET transfer learning on open datasets for classification and automated detection
+
+# Supervised classification using cat's meow dataset
+Data is described here: https://doi.org/10.1007/978-3-030-67835-7_20
+
+## Methods
+Randomly divided the data into a 70/30 split with 70% used for training and 30% used for testing. Use BirdNET transfer learning to train and subsequently classify the test dataset. 
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+library(stringr)  # Load the stringr package for string manipulation
+library(tidyr)    # Load the tidyr package for data tidying
+library(ggpubr)   # Load the ggpubr package for ggplot2-based plotting
+library(ggplot2)
+
+# Get the list of files containing BirdNET clip detections
+ClipDetections <-
+  list.files(
+    'CatsMeow/CatMeowExperiments/birdnetoutput/',
+    recursive = TRUE,
+    full.names = TRUE
+  )
+
+# Get the list of files' names
+ClipDetectionsShort <-
+  list.files(
+    'CatsMeow/CatMeowExperiments/birdnetoutput/',
+    recursive = TRUE,
+    full.names = FALSE
+  )
+
+# Create an empty data frame to store BirdNET performance
+BirdNETPerformanceDFCatsMeow <- data.frame()
+
+# Loop through each clip detection file
+for (a in 1:length(ClipDetections)) {
+  # Read the detection data from the file
+  TempDF <- read.delim(ClipDetections[a])
+  
+  # Get the maximum confidence and the corresponding row
+  Confidence <- max(TempDF$Confidence)
+  TempDF <- TempDF[which.max(TempDF$Confidence), ]
+  
+  # Extract actual label from the directory path
+  ActualLabel <- dirname(ClipDetectionsShort[a])
+  
+  # Extract experiment and actual label from the directory path
+  Experiment <-
+    str_split_fixed(ActualLabel, pattern = '/', n = 2)[, 1]
+  ActualLabel <-
+    str_split_fixed(ActualLabel, pattern = '/', n = 2)[, 2]
+  
+  # Get the predicted label from the detection data
+  PredictedLabel <- TempDF$Species.Code
+  
+  # Create a temporary row for the performance data
+  TempRow <-
+    cbind.data.frame(Confidence, ActualLabel, Experiment, PredictedLabel)
+  TempRow$FileName <- ClipDetectionsShort[a]
+  
+  # Append the temporary row to the performance data frame
+  BirdNETPerformanceDFCatsMeow <-
+    rbind.data.frame(BirdNETPerformanceDFCatsMeow, TempRow)
+}
+
+# Filter out rows with PredictedLabel as 'FALSE'
+BirdNETPerformanceDFCatsMeow <-
+  subset(BirdNETPerformanceDFCatsMeow, PredictedLabel != 'FALSE')
+
+# Get unique experiments
+experiments <- unique(BirdNETPerformanceDFCatsMeow$Experiment)
+
+# Create an empty data frame to store results
+BestF1data.frameCatMeowBirdNET <- data.frame()
+
+# Loop through each threshold value and experiment
+  for (b in 1:length(experiments)) {
+    TopModelDetectionDF_single <-
+      subset(BirdNETPerformanceDFCatsMeow, Experiment == experiments[b])
+    
+    # Calculate confusion matrix using caret package
+    caretConf <- caret::confusionMatrix(
+      as.factor(TopModelDetectionDF_single$PredictedLabel),
+      as.factor(TopModelDetectionDF_single$ActualLabel),
+      mode = 'everything'
+    )
+    
+    # Extract F1 score, Precision, and Recall from the confusion matrix
+    F1 <- caretConf$byClass[, 7]
+    Precision <- caretConf$byClass[, 5]
+    Recall <- caretConf$byClass[, 6]
+    BalancedAccuracy <- caretConf$byClass[, 11]
+    
+    # Create a temporary row for F1 score, Precision, and Recall
+    TempF1Row <- cbind.data.frame(F1, Precision, Recall)
+    TempF1Row$Class <- rownames(TempF1Row)
+    TempF1Row$Experiment <- experiments[b]
+    
+    # Append the temporary row to the results data frame
+    BestF1data.frameCatMeowBirdNET <-
+      rbind.data.frame(BestF1data.frameCatMeowBirdNET, TempF1Row)
+  }
+
+# Reshape the data frame to long format
+BestF1data.frameCatMeowBirdNET_long <- tidyr::gather(BestF1data.frameCatMeowBirdNET,
+                                                     metric,
+                                                     measure,
+                                                     F1:Recall,
+                                                     factor_key = TRUE)
+
+# Plot F1 scores, Precision, and Recall using ggboxplot
+ggpubr::ggboxplot(
+  data = BestF1data.frameCatMeowBirdNET_long,
+  x = 'Class',
+  y = 'measure',
+  fill = 'metric',
+  alpha = 0.75
+) +
+  xlab('') +
+  ylab('Value') +
+  theme(legend.title = element_blank()) +
+  scale_fill_manual(values = matlab::jet.colors(3))  # Adjust color scheme
+
+```
+
+
+
+
+# Automated detection using meerkat data
+Data is described here: https://dcase.community/challenge2023/task-few-shot-bioacoustic-event-detection
+
+## Methods
+
+
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+
+library(ohun)  # Load the ohun package for audio analysis
+library(dplyr)  # Load the dplyr package for data manipulation
+
+# Read the detection results file into a data frame
+TempDF_detect <- read.delim('/Users/denaclink/Desktop/RStudioProjects/Transfer-learning-open-data/Meerkat/birdnetoutput/dcase_MK2.BirdNET.selection.table.txt')
+
+# Add a column for the sound file identifier
+TempDF_detect$sound.files <- 'dcase_MK2'
+
+# Rename columns for clarity
+names(TempDF_detect)[names(TempDF_detect) == "Selection"] <- "selec"
+names(TempDF_detect)[names(TempDF_detect) == "Begin.Time..s."] <- "start"
+names(TempDF_detect)[names(TempDF_detect) == "End.Time..s."] <- "end"
+
+# Select relevant columns
+TempDF_detect <- TempDF_detect[, c("sound.files", "selec", "start", "end")]
+
+# Read the reference detection data
+TempDF_ref <- read.csv('/Users/denaclink/Downloads/dcase_data/Development_Set/Training_Set/MT/test/dcase_MK2.csv')
+
+# Add a column for the sound file identifier
+TempDF_ref$sound.files <- 'dcase_MK2'
+
+# Create a sequence for the 'selec' column
+TempDF_ref$selec <- seq(1, nrow(TempDF_ref), 1)
+
+# Rename columns for clarity
+names(TempDF_ref)[names(TempDF_ref) == "Starttime"] <- "start"
+names(TempDF_ref)[names(TempDF_ref) == "Endtime"] <- "end"
+
+# Select relevant columns
+TempDF_ref <- TempDF_ref[, c("sound.files", "selec", "start", "end")]
+
+# Create a plot over threshold values
+PerformanceDF <- data.frame()
+
+thresholds <- seq(0,1,0.1)
+  
+for(i in 1:length(thresholds)){
+  
+  # Read the detection results file again
+  TempDF_detect <- read.delim('/Users/denaclink/Desktop/RStudioProjects/Transfer-learning-open-data/Meerkat/birdnetoutput/dcase_MK2.BirdNET.selection.table.txt')
+  
+  # Add a column for the sound file identifier
+  TempDF_detect$sound.files <- 'dcase_MK2'
+  
+  # Rename columns for clarity
+  names(TempDF_detect)[names(TempDF_detect) == "Selection"] <- "selec"
+  names(TempDF_detect)[names(TempDF_detect) == "Begin.Time..s."] <- "start"
+  names(TempDF_detect)[names(TempDF_detect) == "End.Time..s."] <- "end"
+  
+  # Subset detections with confidence > 0.8
+  TempDF_detect_90 <- subset(TempDF_detect, Confidence > thresholds[i])
+  
+  # Select relevant columns
+  TempDF_detect_90 <- TempDF_detect_90[, c("sound.files", "selec", "start", "end")]
+  
+  # Diagnose detections with confidence > 0.8
+  Diagnose90 <- diagnose_detection(reference = TempDF_ref, detection = TempDF_detect_90, min.overlap = 0.01)
+  F1 <- Diagnose90$f.score
+  Recall <- Diagnose90$recall
+  Precision <- Diagnose90$precision
+  Threshold <- thresholds[i]
+  
+  TempRow <- cbind.data.frame(F1,Recall,Precision,Threshold)
+  PerformanceDF <- rbind.data.frame(PerformanceDF,TempRow )
+}
+
+
+# Create plot
+ggplot(data = PerformanceDF, aes(x = Threshold)) +
+  geom_line(aes(y = F1, color = "F1"), linetype = "solid") +
+  geom_line(aes(y = Precision, color = "Precision"), linetype = "solid") +
+  geom_line(aes(y = Recall, color = "Recall"), linetype = "solid") +
+  labs(title = "Meerkat automated detection",
+       x = "Thresholds",
+       y = "Values") +
+  scale_color_manual(values = c("F1" = "blue", "Precision" = "red", "Recall" = "green"),
+                     labels = c("F1", "Precision", "Recall")) +
+  theme_minimal()+
+  theme(legend.title = element_blank())# +xlim(0.5,1)
+
+
+```
