@@ -1,0 +1,26 @@
+cd /Users/denaclink/Documents/BirdNETUpdate/BirdNET-Analyzer
+conda activate birdnet-analyzer
+
+# Experiment 1
+python train.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment1/train1/' --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment1_comparison.tflite' 
+python analyze.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment1/test1/' --classifier '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment1_comparison.tflite'  --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetoutput/experiment1/'
+
+# Experiment 2
+python train.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment2/train2/' --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment2_comparison.tflite' 
+python analyze.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment2/test2/' --classifier '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment2_comparison.tflite'  --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetoutput/experiment2/'
+
+# Experiment 2
+python train.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment2/train2/' --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment2_comparison.tflite' 
+python analyze.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment2/test2/' --classifier '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment2_comparison.tflite'  --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetoutput/experiment2/'
+
+# Experiment 3
+python train.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment3/train3/' --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment3_comparison.tflite' 
+python analyze.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment3/test3/' --classifier '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment3_comparison.tflite'  --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetoutput/experiment3/'
+
+# Experiment 4
+python train.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment4/train4/' --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment4_comparison.tflite' 
+python analyze.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment4/test4/' --classifier '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment4_comparison.tflite'  --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetoutput/experiment4/'
+
+# Experiment 5
+python train.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment5/train5/' --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment5_comparison.tflite' 
+python analyze.py --i '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment5/test5/' --classifier '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetmodels/experiment5_comparison.tflite'  --o '/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/birdnetoutput/experiment5/'

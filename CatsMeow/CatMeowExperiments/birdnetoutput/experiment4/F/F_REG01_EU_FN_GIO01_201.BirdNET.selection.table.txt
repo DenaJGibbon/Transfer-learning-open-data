@@ -1,0 +1,4 @@
+Selection	View	Channel	Begin Path	File Duration (s)	Begin Time (s)	End Time (s)	Low Freq (Hz)	High Freq (Hz)	Species Code	Common Name	Confidence
+1	Spectrogram 1	1	/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment4/test4/F/F_REG01_EU_FN_GIO01_201.wav	2	0	3.0	0	4000.0	B	B	0.5219
+2	Spectrogram 1	1	/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment4/test4/F/F_REG01_EU_FN_GIO01_201.wav	2	0	3.0	0	4000.0	I	I	0.1882
+3	Spectrogram 1	1	/Users/denaclink/Desktop/VSCodeRepos/BirdNET Transfer/CatMeowExperiments/experiment4/test4/F/F_REG01_EU_FN_GIO01_201.wav	2	0	3.0	0	4000.0	F	F	0.1736
