@@ -28,4 +28,10 @@ Data is described here:
 
 ## Methods
 
+We used the annotations to put the meerkat clips into training folders
+to train BirdNET. We then ran the trained model over a 43-min file and
+used the ‘ohun’ r package to calculate performance metrics. In the
+‘ohun’ package you specifiy an overlap parameter, that was difficult to
+decide as BirdNET returns 3-sec clips but the meekkat clips are shorter.
+
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->

@@ -147,7 +147,7 @@ ggpubr::ggboxplot(
 Data is described here: https://dcase.community/challenge2023/task-few-shot-bioacoustic-event-detection
 
 ## Methods
-
+We used the annotations to put the meerkat clips into training folders to train BirdNET. We then ran the trained model over a 43-min file and used the 'ohun' r package to calculate performance metrics. In the 'ohun' package you specifiy an overlap parameter, that was difficult to decide as BirdNET returns 3-sec clips but the meekkat clips are shorter.
 
 ```{r, echo=FALSE, warning=FALSE,message=FALSE}
 
